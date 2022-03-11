@@ -5,9 +5,8 @@ import {
   ProductProvider,
   ProductTitle,
   ProductDescription,
-  ProductPrice,
   AddToCartButton,
-  BuyNowButton, useServerState,
+  BuyNowButton,
 } from '@shopify/hydrogen/client'
 import ProductOptions from './ProductOptions.client';
 import Gallery from './Gallery.client';
@@ -15,7 +14,6 @@ import {
   BUTTON_PRIMARY_CLASSES,
   BUTTON_SECONDARY_CLASSES,
 } from './Button.client';
-import { useEffect } from 'react'
 
 function AddToCartMarkup() {
   const {selectedVariant} = useProduct();
@@ -94,17 +92,7 @@ function SizeChart() {
 
 
 export default function ProductDetails({product, children}) {
-  const {setServerState} = useServerState();
   const initialVariant = flattenConnection(product.variants)[0];
-  
-  useEffect(() => {
-    const priceGroup = document.cookie
-                               .split('; ')
-                               .find(row => row.startsWith('priceGroup='))
-                               .split('=')[1];
-    
-    setServerState('priceGroup', priceGroup)
-  }, [])
 
   const productMetafields = useParsedMetafields(product.metafields);
   const sizeChartMetafield = productMetafields.find(
