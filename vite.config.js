@@ -5,6 +5,6 @@ import shopifyConfig from './shopify.config';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [hydrogen(shopifyConfig)],
+  plugins: [hydrogen(shopifyConfig, {devCache: true})],
   optimizeDeps: {include: ['@headlessui/react']},
 });
