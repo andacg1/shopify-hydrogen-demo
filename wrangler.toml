@@ -1,6 +1,6 @@
-name = "PROJECT_NAME"
+name = "shopify-hydrogen-demo"
 type = "javascript"
-account_id = ""
+account_id = "df621d817b7c8813eb849990799d631b"
 workers_dev = true
 route = ""
 zone_id = ""
