@@ -1,11 +1,20 @@
 import renderHydrogen from '@shopify/hydrogen/entry-server';
-import {Router, FileRoutes, ShopifyProvider} from '@shopify/hydrogen';
+import {
+  Router,
+  FileRoutes,
+  ShopifyProvider,
+  setLoggerOptions,
+} from '@shopify/hydrogen';
 import {Suspense} from 'react';
 import shopifyConfig from '../shopify.config';
 import DefaultSeo from './components/DefaultSeo.server';
 import NotFound from './components/NotFound.server';
 import LoadingFallback from './components/LoadingFallback';
 import CartProvider from './components/CartProvider.client';
+
+setLoggerOptions({
+  showQueryTiming: true,
+});
 
 function App({routes, ...serverProps}) {
   return (

@@ -36,7 +36,7 @@ export default function Product({
   }
 
   const {
-    data: {product: originalProduct},
+    data: {product},
   } = useShopQuery({
     query: QUERY,
     variables: {
@@ -47,11 +47,9 @@ export default function Product({
     cache: CacheDays(),
   });
 
-  if (!originalProduct) {
+  if (!product) {
     return <NotFound />;
   }
-
-  const product = new ProductProxy(originalProduct, request, response);
 
   return (
     <Layout>

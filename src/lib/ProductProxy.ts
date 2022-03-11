@@ -5,10 +5,6 @@ export const randomPriceGroup = () => {
 }
 
 export const getPriceGroup = () => {
-    if ( typeof globalThis.priceGroupCookie !== 'undefined' ) {
-        return globalThis.priceGroupCookie
-    }
-    
     if ( typeof document !== 'undefined' ) {
         return document.cookie
                        .split( '; ' )
@@ -30,7 +26,7 @@ const getPrice = (variantId, { amount, currencyCode }) => {
     return prices?.[priceGroup] ?? prices.default
 }
 
-const variantHandler = (priceGroup) => ({
+const variantHandler = {
     get(variant, propKey, receiver) {
         
         switch ( propKey ) {
@@ -50,9 +46,9 @@ const variantHandler = (priceGroup) => ({
                 return Reflect.get( variant, propKey, receiver )
         }
     },
-})
+}
 
-const productHandler = (priceGroup) => ({
+const productHandler = {
     get(product, propKey, receiver) {
         
         switch ( propKey ) {
@@ -61,18 +57,18 @@ const productHandler = (priceGroup) => ({
             case 'variants':
                 return {
                     edges: Reflect.get( product, propKey, receiver ).edges.map( ({ node }) => {
-                        return { node: new Proxy( node, variantHandler( priceGroup ) ) }
+                        return { node: new Proxy( node, variantHandler ) }
                     } ),
                 }
             default:
                 return Reflect.get( product, propKey, receiver )
         }
     },
-})
+}
 
 export default class ProductProxy {
     
     constructor(product, priceGroup) {
-        return new Proxy( product, productHandler( priceGroup ) )
+        return new Proxy( product, productHandler )
     }
 }
