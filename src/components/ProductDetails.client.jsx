@@ -7,17 +7,18 @@ import {
   ProductDescription,
   ProductPrice,
   AddToCartButton,
-  BuyNowButton,
-} from "@shopify/hydrogen/client";
-import ProductOptions from "./ProductOptions.client";
-import Gallery from "./Gallery.client";
+  BuyNowButton, useServerState,
+} from '@shopify/hydrogen/client'
+import ProductOptions from './ProductOptions.client';
+import Gallery from './Gallery.client';
 import {
   BUTTON_PRIMARY_CLASSES,
   BUTTON_SECONDARY_CLASSES,
-} from "./Button.client";
+} from './Button.client';
+import { useEffect } from 'react'
 
 function AddToCartMarkup() {
-  const { selectedVariant } = useProduct();
+  const {selectedVariant} = useProduct();
   const isOutOfStock = !selectedVariant.availableForSale;
 
   return (
@@ -26,7 +27,7 @@ function AddToCartMarkup() {
         className={BUTTON_PRIMARY_CLASSES}
         disabled={isOutOfStock}
       >
-        {isOutOfStock ? "Out of stock" : "Add to bag"}
+        {isOutOfStock ? 'Out of stock' : 'Add to bag'}
       </AddToCartButton>
       {isOutOfStock ? (
         <p className="text-black text-center">Available in 2-3 weeks</p>
@@ -90,22 +91,34 @@ function SizeChart() {
   );
 }
 
-export default function ProductDetails({ product, children }) {
+
+
+export default function ProductDetails({product, children}) {
+  const {setServerState} = useServerState();
   const initialVariant = flattenConnection(product.variants)[0];
+  
+  useEffect(() => {
+    const priceGroup = document.cookie
+                               .split('; ')
+                               .find(row => row.startsWith('priceGroup='))
+                               .split('=')[1];
+    
+    setServerState('priceGroup', priceGroup)
+  }, [])
 
   const productMetafields = useParsedMetafields(product.metafields);
   const sizeChartMetafield = productMetafields.find(
     (metafield) =>
-      metafield.namespace === "my_fields" && metafield.key === "size_chart"
+      metafield.namespace === 'my_fields' && metafield.key === 'size_chart',
   );
   const sustainableMetafield = productMetafields.find(
     (metafield) =>
-      metafield.namespace === "my_fields" && metafield.key === "sustainable"
+      metafield.namespace === 'my_fields' && metafield.key === 'sustainable',
   );
   const lifetimeWarrantyMetafield = productMetafields.find(
     (metafield) =>
-      metafield.namespace === "my_fields" &&
-      metafield.key === "lifetime_warranty"
+      metafield.namespace === 'my_fields' &&
+      metafield.key === 'lifetime_warranty',
   );
 
   return (
@@ -125,7 +138,7 @@ export default function ProductDetails({ product, children }) {
             <span />
             <div className="flex justify-between md:block">
               {children}
-              <ProductPrice
+              {/*<ProductPrice
                 className="text-gray-500 line-through text-lg font-semibold"
                 priceType="compareAt"
                 variantId={initialVariant.id}
@@ -133,7 +146,7 @@ export default function ProductDetails({ product, children }) {
               <ProductPrice
                 className="text-gray-900 text-lg font-semibold"
                 variantId={initialVariant.id}
-              />
+              />*/}
             </div>
           </div>
 
@@ -150,7 +163,8 @@ export default function ProductDetails({ product, children }) {
                   {product.vendor}
                 </div>
               )}
-              <ProductPrice
+              {children}
+              {/*<ProductPrice
                 className="text-gray-500 line-through text-lg font-semibold"
                 priceType="compareAt"
                 variantId={initialVariant.id}
@@ -158,7 +172,7 @@ export default function ProductDetails({ product, children }) {
               <ProductPrice
                 className="text-gray-900 text-lg font-semibold"
                 variantId={initialVariant.id}
-              />
+              />*/}
             </div>
             {/* Product Options */}
             <div className="mt-8">
